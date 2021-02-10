@@ -5,6 +5,7 @@ import { apiGetCustomRequest } from "../helpers/api";
 import { convertHexToUtf8IfPossible } from "../helpers/utilities";
 import { IRequestRenderParams, IRpcEngine } from "../helpers/types";
 import { getAppControllers } from "../controllers";
+import { utils } from "ethers";
 
 export function filterEthereumRequests(payload: any) {
   return (
@@ -69,7 +70,7 @@ export function renderEthereumRequests(payload: any): IRequestRenderParams[] {
         },
         {
           label: "Value",
-          value: payload.params[0].value ? convertHexToNumber(payload.params[0].value) : "",
+          value: payload.params[0].value ? utils.formatEther(payload.params[0].value) : 0,
         },
         { label: "Data", value: payload.params[0].data },
       ];
