@@ -433,6 +433,7 @@ class App extends React.Component<{}> {
       await getAppConfig().rpcEngine.signer(payload, this.state, this.bindedSetState);
     } catch (error) {
       console.error(error);
+      alert(error);
       if (connector) {
         connector.rejectRequest({
           id: payload.id,
