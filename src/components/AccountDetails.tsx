@@ -5,6 +5,8 @@ import { IChainData } from "../helpers/types";
 import { ellipseAddress, getViewportDimensions } from "../helpers/utilities";
 import { responsive } from "../styles";
 import Blockie from "./Blockie";
+import Button from "./Button";
+import Input from "./Input";
 
 const SSection = styled.div`
   width: 100%;
@@ -15,6 +17,18 @@ const SBlockie = styled(Blockie)`
   @media screen and (${responsive.xs.max}) {
     margin-right: 1vw;
   }
+`;
+
+const SButton = styled(Button)`
+  width: 50%;
+  height: 40px;
+`;
+
+const SInput = styled(Input)`
+  width: 100%;
+  margin: 10px;
+  font-size: 14px;
+  height: 40px;
 `;
 
 const SAddressDropdownWrapper = styled.div`
@@ -32,10 +46,12 @@ interface IAccountDetailsProps {
   activeIndex: number;
   address: string;
   chainId: number;
+  addWallet: any;
+  onKeyPaste: any;
 }
 
 const AccountDetails = (props: IAccountDetailsProps) => {
-  const { chains, chainId, address, activeIndex, accounts, updateAddress, updateChain } = props;
+  const { chains, chainId, address, activeIndex, accounts, updateAddress, updateChain,addWallet,onKeyPaste } = props;
   const windowWidth = getViewportDimensions().x;
   const maxWidth = 468;
   const maxChar = 12;
@@ -60,6 +76,11 @@ const AccountDetails = (props: IAccountDetailsProps) => {
             onChange={updateAddress}
           />
         </SAddressDropdownWrapper>
+      </SSection>
+      <SSection>
+      <h6>{"Add Account"}</h6>
+      <SInput onChange={onKeyPaste} placeholder={"Paste Private Key"} />
+      <SButton onClick={addWallet} >{` Add `}</SButton>
       </SSection>
       <SSection>
         <h6>{"Network"}</h6>
