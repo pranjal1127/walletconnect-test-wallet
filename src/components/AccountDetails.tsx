@@ -22,6 +22,7 @@ const SBlockie = styled(Blockie)`
 const SButton = styled(Button)`
   width: 50%;
   height: 40px;
+  margin: 10px;
 `;
 
 const SInput = styled(Input)`

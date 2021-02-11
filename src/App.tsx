@@ -511,7 +511,7 @@ class App extends React.Component<{}> {
           <SContent>
             <Card maxWidth={400}>
               <SLogo>
-                <img src={getAppConfig().logo} alt={getAppConfig().name} />
+                <img src={"https://merkleswap.com/images/eralogo.png"} alt={"Eraswap Wallet"} />
               </SLogo>
               {!connected ? (
                 peerMeta && peerMeta.name ? (
