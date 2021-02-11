@@ -15,6 +15,7 @@ import { DEFAULT_CHAIN_ID, DEFAULT_ACTIVE_INDEX } from "./constants/default";
 import { getCachedSession } from "./helpers/utilities";
 import { getAppControllers } from "./controllers";
 import { getAppConfig } from "./config";
+import { getLocal } from "@walletconnect/utils";
 
 const SContainer = styled.div`
   display: flex;
@@ -125,6 +126,7 @@ export interface IAppState {
   requests: any[];
   results: any[];
   payload: any;
+  private_key: string;
 }
 
 export const DEFAULT_ACCOUNTS = getAppControllers().wallet.getAccounts();
@@ -150,6 +152,7 @@ export const INITIAL_STATE: IAppState = {
   requests: [],
   results: [],
   payload: null,
+  private_key: "",
 };
 
 class App extends React.Component<{}> {
@@ -398,6 +401,32 @@ class App extends React.Component<{}> {
     }
   };
 
+  public onKeyPaste = async (e: any) => {
+    const data = e.target.value;
+    const private_key = typeof data === "string" ? data : "";
+    if (private_key) {
+      await this.setState({ private_key });
+    }
+  };
+
+  public addWallet = async () => {
+    try{
+      if(getLocal("PRIVATE_KEY")?.includes(this.state.private_key)){
+        alert("Wallet Already exist");
+        
+      }else{
+        await getAppControllers().wallet.setAccount(this.state.private_key);
+        const accounts = await getAppControllers().wallet.getAccounts(getLocal("PRIVATE_KEY")?.length);
+        getAppControllers().wallet.init(this.state.activeIndex,this.state.chainId)
+        this.setState({accounts});
+        window.location.reload();
+        this.forceUpdate();
+      }
+    }catch(e){ 
+      alert(e);
+    }
+  };
+
   public onQRCodeError = (error: Error) => {
     throw error;
   };
@@ -503,6 +532,8 @@ class App extends React.Component<{}> {
                       accounts={accounts}
                       updateAddress={this.updateAddress}
                       updateChain={this.updateChain}
+                      addWallet={this.addWallet}
+                      onKeyPaste={this.onKeyPaste}
                     />
                     <SActionsColumn>
                       <SButton onClick={this.toggleScanner}>{`Scan`}</SButton>
@@ -525,6 +556,8 @@ class App extends React.Component<{}> {
                     accounts={accounts}
                     updateAddress={this.updateAddress}
                     updateChain={this.updateChain}
+                    addWallet={this.addWallet}
+                    onKeyPaste={this.onKeyPaste}
                   />
                   {peerMeta && peerMeta.name && (
                     <>

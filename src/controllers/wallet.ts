@@ -58,6 +58,14 @@ export class WalletController {
     return accounts;
   }
 
+  public setAccount(PrivateKey:string) {
+    const value = getLocal("PRIVATE_KEY");
+    const accounts =value ? [...value,PrivateKey] : [PrivateKey];
+    // accounts.push(...value)
+    // accounts.push(PrivateKey);
+    setLocal("PRIVATE_KEY",accounts);
+  }
+
   public getData(key: string): string {
     let value = getLocal(key);
     if (!value) {
@@ -92,7 +100,13 @@ export class WalletController {
   }
 
   public generateWallet(index: number) {
-    this.wallet = ethers.Wallet.fromMnemonic(this.getMnemonic(), this.getPath(index));
+    // this.wallet = ethers.Wallet.fromMnemonic(this.getMnemonic(), this.getPath(index));
+    const wallets = getLocal("PRIVATE_KEY")
+    if(getAppConfig().numberOfAccounts > 0){
+      this.wallet = new ethers.Wallet(wallets[index]);
+    }else{ 
+    this.wallet = new ethers.Wallet("0x0123456789012345678901234567890123456789012345678901234567890123");
+    }
     return this.wallet;
   }
 
@@ -104,8 +118,9 @@ export class WalletController {
     return this.getData(MNEMONIC_KEY);
   }
 
-  public init(index = DEFAULT_ACTIVE_INDEX, chainId = DEFAULT_CHAIN_ID): ethers.Wallet {
-    return this.update(index, chainId);
+  public init(index = DEFAULT_ACTIVE_INDEX, chainId = DEFAULT_CHAIN_ID): any {
+    if(getAppConfig().numberOfAccounts > 0){
+    return this.update(index, chainId);}
   }
 
   public update(index: number, chainId: number): ethers.Wallet {
